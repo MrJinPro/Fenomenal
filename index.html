@@ -4,20 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fenomenal · Palworld Server</title>
-
   <meta name="description" content="Fenomenal — стабильный Palworld‑сервер до 32 игроков, честный PvE и низкий пинг.">
   <meta property="og:title" content="Fenomenal · Palworld Server">
   <meta property="og:description" content="Присоединяйся к Palworld‑серверу Fenomenal: приключения начинаются здесь!">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://palworld.mrjin.pro">
-
   <link rel="icon" type="image/svg+xml"
         href="https://raw.githubusercontent.com/MrJinPro/Fenomenal/refs/heads/main/favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;700&display=swap"
         rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         rel="stylesheet" crossorigin="anonymous">
-
   <style>
     :root {
       --accent: #00ffa3;
@@ -36,7 +33,6 @@
       }
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background: linear-gradient(135deg, var(--bg), var(--bg2));
@@ -47,7 +43,6 @@
       perspective: 800px;
       overscroll-behavior: none;
     }
-
     /* NAV */
     header {
       position: sticky;
@@ -93,7 +88,6 @@
     .primary-btn:hover {
       background: var(--accent-dark);
     }
-
     /* HERO */
     .hero {
       position: relative;
@@ -139,7 +133,6 @@
       font-size: 1.15rem;
       color: var(--text-muted);
     }
-
     /* MAIN */
     main { flex: 1; }
     section {
@@ -157,7 +150,6 @@
       padding-left: 1.25rem;
       line-height: 1.7;
     }
-
     /* STATUS */
     .status-box {
       background: rgba(0,0,0,.55);
@@ -175,7 +167,6 @@
       font-size: 1.45rem;
       margin-bottom: .12rem;
     }
-
     /* FOOTER */
     footer {
       text-align: center;
@@ -183,7 +174,6 @@
       font-size: .85rem;
       color: var(--text-muted);
     }
-
     /* TOAST */
     #toast {
       position: fixed;
@@ -201,7 +191,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,.2);
     }
     #toast.show { opacity: 1; }
-
     /* MOBILE */
     @media(max-width:480px){
       header { padding: .5rem .8rem; }
@@ -219,7 +208,6 @@
       <i class="fa-brands fa-steam"></i> Подключиться
     </a>
   </header>
-
   <main>
     <!-- HERO -->
     <div class="hero">
@@ -227,7 +215,6 @@
       <div class="big">Palworld Server</div>
       <p>Стабильный PvE‑мир до 32 игроков. Забирай друзей — приключения ждут!</p>
     </div>
-
     <!-- О сервере -->
     <section>
       <h2>О сервере</h2>
@@ -239,7 +226,6 @@
         <li>SSD‑хостинг → 99.9% аптайм</li>
       </ul>
     </section>
-
     <!-- Подключение -->
     <section>
       <h2>Как подключиться</h2>
@@ -252,13 +238,11 @@
         <i class="fa-regular fa-copy"></i> Скопировать IP
       </button>
     </section>
-
     <!-- Статус -->
     <section id="statusSec" hidden>
       <h2>Статус сервера <span id="dot" style="font-size:.7em;">⏳</span></h2>
       <div class="status-box" id="statusBox"></div>
     </section>
-
     <!-- Контакты -->
     <section>
       <h2>Контакты</h2>
@@ -268,29 +252,28 @@
       </ul>
     </section>
   </main>
-
   <footer>© 2025 Fenomenal Server by MrJin. Все права защищены.</footer>
-
   <div id="toast">IP скопирован в буфер!</div>
-
   <!-- Three.js + 3D модель -->
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
     import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-
     // Инициализация 3D
     const cvs = document.getElementById('palCanvas');
     const renderer = new THREE.WebGLRenderer({ canvas: cvs, alpha: true, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(cvs.clientWidth, cvs.clientHeight);
-
+    function resizeRenderer() {
+      renderer.setSize(cvs.clientWidth, cvs.clientHeight);
+      cam.aspect = cvs.clientWidth / cvs.clientHeight;
+      cam.updateProjectionMatrix();
+    }
+    resizeRenderer();
+    window.addEventListener('resize', resizeRenderer);
     const scene = new THREE.Scene();
-    const cam = new THREE.PerspectiveCamera(35, 1, 0.1, 15);
+    const cam = new THREE.PerspectiveCamera(35, cvs.clientWidth / cvs.clientHeight, 0.1, 15);
     cam.position.set(0, 0, 4);
-
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(2, 3, 4));
-
-    new GLTFLoader().load('palball.glb', gltf => {
+    new GLTFLoader().load('/palball.glb?v=1', gltf => {
       const mdl = gltf.scene;
       mdl.rotation.x = -0.3;
       scene.add(mdl);
@@ -298,8 +281,7 @@
         mdl.rotation.y += 0.005;
         renderer.render(scene, cam);
       });
-    });
-
+    }, undefined, error => console.error('Ошибка загрузки модели:', error));
     // Copy + Toast
     const toast = document.getElementById('toast');
     document.getElementById('copyBtn').onclick = () => {
@@ -308,7 +290,6 @@
         setTimeout(() => toast.classList.remove('show'), 2500);
       });
     };
-
     // Live Status
     const statusBox = document.getElementById('statusBox');
     const statusSec = document.getElementById('statusSec');
