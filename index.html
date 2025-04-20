@@ -180,7 +180,7 @@ cam.position.set(0,0,4);
 
 scene.add(new THREE.DirectionalLight(0xffffff,1.2).position.set(2,3,4));
 
-new GLTFLoader().load('/assets/palball.glb',g=>{
+new GLTFLoader().load('palball.glb',g=>{
   const mdl=g.scene;
   mdl.rotation.x=-0.3;scene.add(mdl);
   renderer.setAnimationLoop(()=>{mdl.rotation.y+=0.005;renderer.render(scene,cam)});
