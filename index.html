@@ -4,171 +4,161 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fenomenal · Palworld Server</title>
-  <meta name="description"
-        content="Fenomenal — стабильный Palworld‑сервер от MrJin: до 32 игроков, честный PvE и низкий пинг." />
-  <meta property="og:title" content="Fenomenal · Palworld Server" />
-  <meta property="og:description"
-        content="Присоединяйся к Palworld‑серверу Fenomenal: приключения начинаются здесь!" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://palworld.mrjin.pro" />
+  <meta name="description" content="Fenomenal — стабильный Palworld‑сервер до 32 игроков, честный PvE и низкий пинг." />
 
-  <link rel="icon" href="https://raw.githubusercontent.com/MrJinPro/Fenomenal/refs/heads/main/favicon.svg" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" integrity="sha384-Hx6" crossorigin="anonymous"/>
+  <!-- Open Graph -->
+  <meta property="og:title" content="Fenomenal · Palworld Server"/>
+  <meta property="og:description" content="Присоединяйся к Palworld‑серверу Fenomenal: приключения начинаются здесь!"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://palworld.mrjin.pro"/>
+
+  <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/MrJinPro/Fenomenal/refs/heads/main/favicon.svg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous"/>
 
   <style>
-    :root{
-      --accent:#00ffa3;
-      --accent-dark:#00cc84;
-      --bg:#1c1c1c;
-      --bg2:#2f2f2f;
-      --text:#fff;
-      --text-muted:#a5a5a5;
-    }
-    @media (prefers-color-scheme:light){
-      :root{
-        --bg:#fafafa;
-        --bg2:#eaeaea;
-        --text:#121212;
-        --text-muted:#555;
-      }
-    }
+  /* ---------- CSS Variables ---------- */
+  :root{
+    --accent:#00ffa3; --accent-dark:#00cc84;
+    --bg:#1c1c1c;     --bg2:#2f2f2f;
+    --text:#fff;      --text-muted:#a5a5a5;
+  }
+  @media(prefers-color-scheme:light){
+    :root{--bg:#fafafa;--bg2:#eaeaea;--text:#121212;--text-muted:#555;}
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(135deg,var(--bg),var(--bg2));
+    color:var(--text);min-height:100dvh;display:flex;flex-direction:column;
+    perspective:800px;            /* для 3D‑вращений */
+  }
 
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{
-      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-      background:linear-gradient(135deg,var(--bg),var(--bg2));
-      color:var(--text);
-      min-height:100dvh;
-      display:flex;
-      flex-direction:column;
-    }
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(10px);background:rgba(0,0,0,.45);
+    padding:.6rem 1rem;display:flex;align-items:center;gap:.6rem;
+  }
+  .logo{
+    display:flex;align-items:center;gap:.45rem;text-decoration:none;
+  }
+  .logo img{width:36px;height:36px}
+  .logo span{
+    font:600 1.35rem/1 'Orbitron',sans-serif;
+    letter-spacing:.5px;
+    background:linear-gradient(90deg,var(--accent),#4dffe0 60%);
+    -webkit-background-clip:text;color:transparent;
+  }
 
-    /* ---------- NAV ---------- */
-    header{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:blur(8px);
-      background:rgba(0,0,0,.4);
-      padding:.75rem 1.25rem;
-      display:flex;align-items:center;justify-content:space-between;
-    }
-    header h1{
-      font-family:'Orbitron',sans-serif;
-      letter-spacing:.5px;font-size:1.25rem;
-      background:linear-gradient(90deg,var(--accent),#4dffe0 60%);
-      -webkit-background-clip:text;color:transparent;
-    }
-    .primary-btn{
-      background:var(--accent);color:#000;
-      padding:.6rem 1.25rem;border-radius:.5rem;font-weight:600;
-      text-decoration:none;display:inline-flex;gap:.5rem;align-items:center;
-      transition:background .25s;
-    }
-    .primary-btn:hover{background:var(--accent-dark);}
-    /* ---------- HERO ---------- */
-    .hero{
-      max-width:900px;margin:4rem auto 3rem;padding:0 1rem;text-align:center;
-    }
-    .hero .big{
-      font-family:'Orbitron',sans-serif;
-      font-size:clamp(2.5rem,8vw,4.5rem);
-      background:linear-gradient(90deg,var(--accent),#4dffe0 60%);
-      -webkit-background-clip:text;color:transparent;
-      animation:gradient-move 6s ease-in-out infinite;
-      background-size:200% auto;
-    }
-    @keyframes gradient-move{
-      0%,100%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-    }
-    .hero p{margin-top:.75rem;font-size:1.1rem;color:var(--text-muted);}
-    /* ---------- MAIN SECTIONS ---------- */
-    main{flex:1;}
-    section{max-width:820px;margin:2.5rem auto;padding:0 1rem;}
-    section h2{
-      font-size:1.5rem;margin-bottom:.75rem;
-      color:var(--accent);
-    }
-    ul{list-style:disc;padding-left:1.25rem;line-height:1.7;}
-    /* ---------- SERVER STATUS ---------- */
-    .status-box{
-      background:rgba(0,0,0,.55);border:1px solid var(--accent-dark);
-      border-radius:.75rem;padding:1rem;margin-top:1rem;
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem;text-align:center;font-size:.9rem;
-    }
-    .status-box div strong{display:block;font-size:1.4rem;margin-bottom:.15rem;}
-    /* ---------- FOOTER ---------- */
-    footer{
-      text-align:center;padding:2rem 1rem;font-size:.85rem;color:var(--text-muted);
-    }
-    /* ---------- TOAST ---------- */
-    #toast{
-      position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);
-      background:var(--accent);color:#000;padding:.7rem 1.2rem;
-      border-radius:.5rem;opacity:0;pointer-events:none;transition:opacity .35s;
-      font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.2);
-    }
-    #toast.show{opacity:1;}
-    /* ---------- SMALL ---------- */
-    @media(max-width:480px){
-      header{padding:.5rem .75rem;}
-    }
+  .primary-btn{
+    margin-left:auto;
+    background:var(--accent);color:#000;padding:.55rem 1.2rem;border-radius:.5rem;
+    font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.45rem;
+    transition:background .25s;
+  }
+  .primary-btn:hover{background:var(--accent-dark)}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    max-width:920px;margin:4.5rem auto 3rem;padding:0 1rem;text-align:center;
+  }
+  .hero .big{
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(2.5rem,8vw,4.7rem);
+    background:linear-gradient(90deg,var(--accent),#4dffe0 60%);background-size:200% auto;
+    -webkit-background-clip:text;color:transparent;animation:gradient 6s ease-in-out infinite;
+    transform-style:preserve-3d;
+  }
+  @keyframes gradient{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+  .hero:hover .big{transform:rotateX(12deg) rotateY(-10deg)}   /* лёгкий 3D‑наклон */
+  .hero p{margin-top:.9rem;font-size:1.15rem;color:var(--text-muted)}
+
+  /* ---------- MAIN ---------- */
+  main{flex:1;}
+  section{max-width:840px;margin:3rem auto;padding:0 1rem}
+  section h2{font-size:1.55rem;margin-bottom:.8rem;color:var(--accent)}
+  ul{list-style:disc;padding-left:1.25rem;line-height:1.7}
+
+  /* ---------- STATUS BOX ---------- */
+  .status-box{
+    background:rgba(0,0,0,.55);border:1px solid var(--accent-dark);
+    border-radius:.75rem;padding:1.2rem;margin-top:1.1rem;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.9rem;text-align:center
+  }
+  .status-box div strong{display:block;font-size:1.45rem;margin-bottom:.12rem}
+
+  /* ---------- FOOTER ---------- */
+  footer{text-align:center;padding:2rem 1rem;font-size:.85rem;color:var(--text-muted)}
+
+  /* ---------- TOAST ---------- */
+  #toast{
+    position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);
+    background:var(--accent);color:#000;padding:.7rem 1.2rem;border-radius:.5rem;
+    opacity:0;pointer-events:none;transition:opacity .35s;font-weight:500;
+    box-shadow:0 4px 12px rgba(0,0,0,.2)
+  }
+  #toast.show{opacity:1}
+
+  /* ---------- SMALL ---------- */
+  @media(max-width:480px){header{padding:.5rem .8rem}}
   </style>
 </head>
 <body>
+  <!-- NAV -->
   <header>
-    <h1>Fenomenal</h1>
+    <a href="#" class="logo">
+      <img src="https://raw.githubusercontent.com/MrJinPro/Fenomenal/refs/heads/main/favicon.svg" alt="Fenomenal Logo"/>
+      <span>Fenomenal</span>
+    </a>
     <a class="primary-btn" href="steam://connect/fenomenal.mrjin.pro:8211">
       <i class="fa-brands fa-steam"></i> Подключиться
     </a>
   </header>
 
   <main>
-    <!-- Hero -->
+    <!-- HERO -->
     <div class="hero">
       <div class="big">Palworld Server</div>
-      <p>Стабильный PvE‑мир до 32 игроков. Твои приключения начинаются здесь!</p>
+      <p>Стабильный PvE‑мир до 32 игроков. Забирай приятелей — приключения ждут!</p>
     </div>
 
     <!-- О сервере -->
     <section>
       <h2>О сервере</h2>
       <ul>
-        <li>До 32 игроков одновременно</li>
-        <li>Чистый PvE без гриферства</li>
-        <li>Телепорты между ключевыми точками</li>
-        <li>Тонко настроенный баланс крафта</li>
-        <li>SSD‑хостинг → низкий пинг &amp; 99.9% аптайм</li>
+        <li>32 игрока одновременно</li>
+        <li>Чистый PvE, защита от грифа</li>
+        <li>Телепорты к ключевым точкам</li>
+        <li>Баланс крафта, ускоренный рост</li>
+        <li>SSD‑хостинг → 99.9% аптайм</li>
       </ul>
     </section>
 
-    <!-- Как подключиться -->
+    <!-- Инструкция -->
     <section>
       <h2>Как подключиться</h2>
       <ul>
         <li>Запусти <strong>Palworld</strong></li>
-        <li>В меню выбери «Direct Connect»</li>
-        <li>Введи <kbd>fenomenal.mrjin.pro:8211</kbd> или нажми кнопку сверху</li>
+        <li>Меню «Direct Connect»</li>
+        <li>Введи <kbd>fenomenal.mrjin.pro:8211</kbd> или нажми кнопку вверху</li>
       </ul>
       <button class="primary-btn" id="copyBtn"><i class="fa-regular fa-copy"></i> Скопировать IP</button>
     </section>
 
-    <!-- Статус сервера -->
+    <!-- Статус -->
     <section id="statusSec" hidden>
       <h2>Статус сервера <span id="dot" style="font-size:.7em;">⏳</span></h2>
-      <div class="status-box" id="statusBox">
-        <!-- динамически -->
-      </div>
+      <div class="status-box" id="statusBox"></div>
     </section>
 
     <!-- Контакты -->
     <section>
       <h2>Контакты</h2>
-    <ul>
-      <li>Discord: <a href="https://discord.gg/6rJS8wHh" target="_blank">Fenomenal</a></li>
-      <li>Telegram (MrJin): <a href="https://t.me/MrJin_pro" target="_blank">MrJinPro</a></li>
-    </ul>
-
+      <ul>
+        <li>Discord: <a href="https://discord.gg/6rJS8wHh" target="_blank">Fenomenal</a></li>
+        <li>Telegram: <a href="https://t.me/MrJin_pro" target="_blank">@MrJin_pro</a></li>
+      </ul>
     </section>
   </main>
 
@@ -176,41 +166,35 @@
     © 2025 Fenomenal Server by MrJin. Все права защищены.
   </footer>
 
-  <!-- Toast -->
+  <!-- TOAST -->
   <div id="toast">IP скопирован в буфер!</div>
 
   <script>
-    /* ---- copy IP + toast ---- */
-    const toast = document.getElementById('toast');
-    document.getElementById('copyBtn').onclick = () => {
-      navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(showToast);
-    };
-    function showToast(){
+  /* toast + copy */
+  const toast=document.getElementById('toast');
+  document.getElementById('copyBtn').onclick=()=>{
+    navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(()=>{
       toast.classList.add('show');
-      setTimeout(()=>toast.classList.remove('show'), 2500);
-    }
+      setTimeout(()=>toast.classList.remove('show'),2500);
+    });
+  };
 
-    /* ---- fetch server status if endpoint доступен ---- */
-    async function loadStatus(){
-      try{
-        const r = await fetch('/api/server/status',{cache:'no-store'});
-        if(!r.ok) throw 0;
-        const {status, uptime, memory, cpu, playerCount} = await r.json();
-        const box = document.getElementById('statusBox');
-        box.innerHTML = `
-          <div><strong>${status ?? '—'}</strong>Статус</div>
-          <div><strong>${playerCount ?? '—'}</strong>Игроков</div>
-          <div><strong>${uptime ?? '—'}</strong>Аптайм</div>
-          <div><strong>${cpu ?? '—'}</strong>CPU</div>
-          <div><strong>${memory ?? '—'}</strong>RAM</div>`;
-        document.getElementById('statusSec').hidden = false;
-        document.getElementById('dot').textContent = '🟢';
-      }catch{
-        document.getElementById('dot').textContent = '🔴';
-      }
-    }
-    loadStatus();           // первая загрузка
-    setInterval(loadStatus, 30_000); // обновление каждые 30 с
+  /* live status */
+  async function loadStatus(){
+    try{
+      const r=await fetch('/api/server/status',{cache:'no-store'});
+      if(!r.ok)throw 0;
+      const {status,uptime,memory,cpu,playerCount}=await r.json();
+      statusBox.innerHTML=`
+        <div><strong>${status??'—'}</strong>Статус</div>
+        <div><strong>${playerCount??'—'}</strong>Игроков</div>
+        <div><strong>${uptime??'—'}</strong>Аптайм</div>
+        <div><strong>${cpu??'—'}</strong>CPU</div>
+        <div><strong>${memory??'—'}</strong>RAM</div>`;
+      statusSec.hidden=false;dot.textContent='🟢';
+    }catch{dot.textContent='🔴';}
+  }
+  loadStatus();setInterval(loadStatus,30_000);
   </script>
 </body>
 </html>
