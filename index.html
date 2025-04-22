@@ -9,7 +9,7 @@
   <meta property="og:description" content="Присоединяйся к Palworld‑серверу Fenomenal: приключения начинаются здесь!">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://palworld.mrjin.pro">
-  <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/MrJinPro/Fenomenal/refs/heads/main/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
   <style>
@@ -29,194 +29,103 @@
         --text-muted: #555;
       }
     }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background: linear-gradient(135deg, var(--bg), var(--bg2));
       color: var(--text);
       min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      perspective: 800px;
-      overscroll-behavior: none;
+      display: flex; flex-direction: column;
+      perspective: 800px; overscroll-behavior: none;
     }
-    /* NAV */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      position: sticky; top:0; z-index:50;
       backdrop-filter: blur(10px);
-      background: rgba(0, 0, 0, 0.45);
-      padding: .6rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: .6rem;
+      background: rgba(0,0,0,0.45);
+      padding:.6rem 1rem; display:flex; align-items:center; gap:.6rem;
     }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: .45rem;
-      text-decoration: none;
-    }
-    .logo img {
-      width: 38px;
-      height: 38px;
-    }
+    .logo { display:flex; align-items:center; gap:.45rem; text-decoration:none; }
+    .logo img { width:38px; height:38px; }
     .logo span {
-      font: 600 1.35rem/1 'Orbitron', sans-serif;
-      letter-spacing: .5px;
+      font:600 1.35rem/1 'Orbitron', sans-serif;
       background: linear-gradient(90deg, var(--accent), #4dffe0 60%);
-      -webkit-background-clip: text;
-      color: transparent;
+      -webkit-background-clip: text; color: transparent;
     }
     .primary-btn {
-      margin-left: auto;
-      background: var(--accent);
-      color: #000;
-      padding: .55rem 1.2rem;
-      border-radius: .5rem;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
+      margin-left:auto; background:var(--accent); color:#000;
+      padding:.55rem 1.2rem; border-radius:.5rem; font-weight:600;
+      text-decoration:none; display:inline-flex; align-items:center; gap:.45rem;
       transition: background .25s;
     }
-    .primary-btn:hover {
-      background: var(--accent-dark);
-    }
-    /* HERO */
+    .primary-btn:hover { background: var(--accent-dark); }
     .hero {
-      position: relative;
-      max-width: 920px;
-      margin: 4.5rem auto 3rem;
-      padding: 0 1rem;
-      text-align: center;
+      position: relative; max-width:920px; margin:4.5rem auto 3rem; padding:0 1rem;
+      text-align:center;
     }
     #palCanvas {
-      position: absolute;
-      inset: 0;
-      margin: auto;
-      width: 280px;
-      height: 280px;
-      display: block;
-      pointer-events: none;
-      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, .4));
+      position:absolute; inset:0; margin:auto;
+      width:280px; height:280px; pointer-events:none;
+      filter: drop-shadow(0 10px 25px rgba(0,0,0,.4));
     }
     .big {
-      position: relative;
-      z-index: 5;
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2.5rem, 8vw, 4.7rem);
+      position:relative; z-index:5; font-family:'Orbitron',sans-serif;
+      font-size:clamp(2.5rem,8vw,4.7rem);
       background: linear-gradient(90deg, var(--accent), #4dffe0 60%);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      color: transparent;
-      animation: gradient 6s ease-in-out infinite,
-                 tilt     10s ease-in-out infinite;
-      transform-origin: center;
-      transform-style: preserve-3d;
+      background-size:200% auto; -webkit-background-clip:text; color:transparent;
+      animation: gradient 6s ease-in-out infinite, tilt 10s ease-in-out infinite;
+      transform-origin:center; transform-style:preserve-3d;
     }
     @keyframes gradient {
-      0%,100% { background-position: 0 50%; }
-      50%     { background-position: 100% 50%; }
+      0%,100% { background-position:0 50%; }
+      50%     { background-position:100% 50%; }
     }
     @keyframes tilt {
-      0%,100% { transform: rotateX(0) rotateY(0); }
-      50%     { transform: rotateX(18deg) rotateY(-22deg) translateZ(20px); }
+      0%,100% { transform:rotateX(0) rotateY(0); }
+      50%     { transform:rotateX(18deg) rotateY(-22deg) translateZ(20px); }
     }
-    .hero p {
-      margin-top: .9rem;
-      font-size: 1.15rem;
-      color: var(--text-muted);
-    }
-    /* MAIN */
-    main { flex: 1; }
-    section {
-      max-width: 840px;
-      margin: 3rem auto;
-      padding: 0 1rem;
-    }
-    section h2 {
-      font-size: 1.55rem;
-      margin-bottom: .8rem;
-      color: var(--accent);
-    }
-    ul {
-      list-style: disc;
-      padding-left: 1.25rem;
-      line-height: 1.7;
-    }
-    /* STATUS */
+    .hero p { margin-top:.9rem; font-size:1.15rem; color:var(--text-muted); }
+    main { flex:1; }
+    section { max-width:840px; margin:3rem auto; padding:0 1rem; }
+    section h2 { font-size:1.55rem; margin-bottom:.8rem; color:var(--accent); }
+    ul { list-style:disc; padding-left:1.25rem; line-height:1.7; }
     .status-box {
-      background: rgba(0,0,0,.55);
-      border: 1px solid var(--accent-dark);
-      border-radius: .75rem;
-      padding: 1.2rem;
-      margin-top: 1.1rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: .9rem;
-      text-align: center;
+      background:rgba(0,0,0,.55); border:1px solid var(--accent-dark);
+      border-radius:.75rem; padding:1.2rem; margin-top:1.1rem;
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr));
+      gap:.9rem; text-align:center;
     }
-    .status-box div strong {
-      display: block;
-      font-size: 1.45rem;
-      margin-bottom: .12rem;
-    }
-    /* FOOTER */
+    .status-box div strong { display:block; font-size:1.45rem; margin-bottom:.12rem; }
     footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: .85rem;
-      color: var(--text-muted);
+      text-align:center; padding:2rem 1rem; font-size:.85rem; color:var(--text-muted);
     }
-    /* TOAST */
     #toast {
-      position: fixed;
-      bottom: 1.2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: #000;
-      padding: .7rem 1.2rem;
-      border-radius: .5rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .35s;
-      font-weight: 500;
-      box-shadow: 0 4px 12px rgba(0,0,0,.2);
+      position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%);
+      background:var(--accent); color:#000; padding:.7rem 1.2rem;
+      border-radius:.5rem; opacity:0; pointer-events:none; transition:opacity .35s;
+      font-weight:500; box-shadow:0 4px 12px rgba(0,0,0,.2);
     }
-    #toast.show { opacity: 1; }
-    /* MOBILE */
-    @media(max-width:480px){
-      header { padding: .5rem .8rem; }
-    }
+    #toast.show { opacity:1; }
+    @media(max-width:480px){ header { padding:.5rem .8rem; } }
   </style>
 </head>
 <body>
-  <!-- NAV -->
   <header>
     <a href="#" class="logo">
-      <img src="https://raw.githubusercontent.com/MrJinPro/Fenomenal/refs/heads/main/favicon.svg" alt="Fenomenal">
+      <img src="favicon.svg" alt="Fenomenal">
       <span>Fenomenal</span>
     </a>
     <a class="primary-btn" href="steam://connect/fenomenal.mrjin.pro:8211">
       <i class="fa-brands fa-steam"></i> Подключиться
     </a>
   </header>
+
   <main>
-    <!-- HERO -->
     <div class="hero">
       <canvas id="palCanvas"></canvas>
       <div class="big">Palworld Server</div>
       <p>Стабильный PvE‑мир до 32 игроков. Забирай друзей — приключения ждут!</p>
     </div>
-    <!-- О сервере -->
+
     <section>
       <h2>О сервере</h2>
       <ul>
@@ -227,7 +136,7 @@
         <li>SSD‑хостинг → 99.9% аптайм</li>
       </ul>
     </section>
-    <!-- Подключение -->
+
     <section>
       <h2>Как подключиться</h2>
       <ul>
@@ -239,12 +148,12 @@
         <i class="fa-regular fa-copy"></i> Скопировать IP
       </button>
     </section>
-    <!-- Статус -->
+
     <section id="statusSec" hidden>
       <h2>Статус сервера <span id="dot" style="font-size:.7em;">⏳</span></h2>
       <div class="status-box" id="statusBox"></div>
     </section>
-    <!-- Контакты -->
+
     <section>
       <h2>Контакты</h2>
       <ul>
@@ -253,37 +162,49 @@
       </ul>
     </section>
   </main>
+
   <footer>© 2025 Fenomenal Server by MrJin. Все права защищены.</footer>
   <div id="toast">IP скопирован в буфер!</div>
-  <!-- Three.js + 3D модель -->
+
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
     import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-    // Инициализация 3D
+
     const cvs = document.getElementById('palCanvas');
     const renderer = new THREE.WebGLRenderer({ canvas: cvs, alpha: true, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
-    function resizeRenderer() {
-      renderer.setSize(cvs.clientWidth, cvs.clientHeight);
-      cam.aspect = cvs.clientWidth / cvs.clientHeight;
+
+    const scene = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(35, 1, 0.1, 15);
+    cam.position.set(0, 0, 4);
+
+    scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(2, 3, 4));
+
+    function resize() {
+      const w = cvs.clientWidth, h = cvs.clientHeight;
+      renderer.setSize(w, h);
+      cam.aspect = w / h;
       cam.updateProjectionMatrix();
     }
-    resizeRenderer();
-    window.addEventListener('resize', resizeRenderer);
-    const scene = new THREE.Scene();
-    const cam = new THREE.PerspectiveCamera(35, cvs.clientWidth / cvs.clientHeight, 0.1, 15);
-    cam.position.set(0, 0, 4);
-    scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(2, 3, 4));
-    new GLTFLoader().load('/palball.glb?v=1', gltf => {
-      const mdl = gltf.scene;
-      mdl.rotation.x = -0.3;
-      scene.add(mdl);
-      renderer.setAnimationLoop(() => {
-        mdl.rotation.y += 0.005;
-        renderer.render(scene, cam);
-      });
-    }, undefined, error => console.error('Ошибка загрузки модели:', error));
-    // Copy + Toast
+    window.addEventListener('resize', resize);
+    resize();
+
+    new GLTFLoader().load(
+      'palball.glb',
+      gltf => {
+        const mdl = gltf.scene;
+        mdl.rotation.x = -0.3;
+        scene.add(mdl);
+        renderer.setAnimationLoop(() => {
+          mdl.rotation.y += 0.005;
+          renderer.render(scene, cam);
+        });
+      },
+      undefined,
+      err => console.error('Ошибка загрузки модели:', err)
+    );
+
+    // Copy IP & Toast
     const toast = document.getElementById('toast');
     document.getElementById('copyBtn').onclick = () => {
       navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(() => {
@@ -291,21 +212,23 @@
         setTimeout(() => toast.classList.remove('show'), 2500);
       });
     };
+
     // Live Status
     const statusBox = document.getElementById('statusBox');
     const statusSec = document.getElementById('statusSec');
     const dot       = document.getElementById('dot');
+
     async function loadStatus() {
       try {
         const r = await fetch('/api/server/status', { cache: 'no-store' });
         if (!r.ok) throw 0;
         const { status, uptime, memory, cpu, playerCount } = await r.json();
         statusBox.innerHTML = `
-          <div><strong>${status ?? '—'}</strong>Статус</div>
+          <div><strong>${status  ?? '—'}</strong>Статус</div>
           <div><strong>${playerCount ?? '—'}</strong>Игроков</div>
-          <div><strong>${uptime ?? '—'}</strong>Аптайм</div>
-          <div><strong>${cpu ?? '—'}</strong>CPU</div>
-          <div><strong>${memory ?? '—'}</strong>RAM</div>`;
+          <div><strong>${uptime   ?? '—'}</strong>Аптайм</div>
+          <div><strong>${cpu      ?? '—'}</strong>CPU</div>
+          <div><strong>${memory   ?? '—'}</strong>RAM</div>`;
         statusSec.hidden = false;
         dot.textContent  = '🟢';
       } catch {
