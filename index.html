@@ -10,8 +10,10 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://palworld.mrjin.pro">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+
   <style>
     :root {
       --accent: #00ffa3;
@@ -32,27 +34,27 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family: Inter, sans-serif; background: linear-gradient(135deg,var(--bg),var(--bg2)); color: var(--text); min-height:100vh; display:flex; flex-direction:column; }
     header {
-      position:sticky; top:0; z-index:10;
-      backdrop-filter:blur(10px); background:rgba(0,0,0,0.45);
-      padding:.6rem 1rem; display:flex; align-items:center; gap:.6rem;
+      position: sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px); background: rgba(0,0,0,0.45);
+      padding:.6rem 1rem; display:flex; align-items:center;
     }
     .logo { display:flex; align-items:center; gap:.5rem; text-decoration:none; }
     .logo img { width:36px; height:36px; }
     .logo span {
-      font:600 1.3rem 'Orbitron'; background:linear-gradient(90deg,var(--accent),#4dffe0 60%);
+      font:600 1.3rem 'Orbitron'; background: linear-gradient(90deg,var(--accent),#4dffe0 60%);
       -webkit-background-clip:text; color:transparent;
     }
     .primary-btn {
-      margin-left:auto; background:var(--accent); color:#000;
+      margin-left:auto; background: var(--accent); color:#000;
       padding:.5rem 1.2rem; border-radius:.5rem; font-weight:600;
       text-decoration:none; display:inline-flex; align-items:center; gap:.4rem;
-      transition:background .2s;
+      transition: background .2s;
     }
-    .primary-btn:hover { background:var(--accent-dark); }
+    .primary-btn:hover { background: var(--accent-dark); }
 
     main { flex:1; }
     .hero {
-      position:relative; height:60vh; min-height:320px;
+      position: relative; height:60vh; min-height:320px;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       text-align:center; overflow:hidden;
     }
@@ -64,8 +66,8 @@
     .hero .title {
       position:relative; z-index:2;
       font-family:'Orbitron'; font-size:3rem; line-height:1;
-      background:linear-gradient(90deg,var(--accent),#4dffe0 60%);
-      background-clip:text; -webkit-background-clip:text; color:transparent;
+      background: linear-gradient(90deg,var(--accent),#4dffe0 60%);
+      -webkit-background-clip:text; color:transparent;
       margin-bottom:.5rem;
     }
     .hero .subtitle {
@@ -75,7 +77,7 @@
 
     section { max-width:840px; margin:2rem auto; padding:0 1rem; }
     section h2 { font-size:1.5rem; color:var(--accent); margin-bottom:.6rem; }
-    section ul { list-style:disc; padding-left:1.5rem; line-height:1.7; color:var(--text); }
+    section ul { list-style:disc; padding-left:1.5rem; line-height:1.7; }
     kbd { background:rgba(255,255,255,.1); padding:.2rem .4rem; border-radius:.25rem; }
 
     #statusSec { display:none; }
@@ -112,7 +114,7 @@
     <div class="hero">
       <canvas id="palCanvas"></canvas>
       <div class="title">Palworld Server</div>
-      <div class="subtitle">Стабильный PvE‑мир до 32 игроков. Забирай друзей — приключения ждут!</div>
+      <div class="subtitle">Стабильный PvE‑мир до 32 игроков. Приключения ждут!</div>
     </div>
 
     <section>
@@ -159,22 +161,18 @@
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
     import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
 
-    // Renderer & canvas
     const canvas   = document.getElementById('palCanvas');
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Scene & camera
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10);
     camera.position.set(0, 0, 4);
     scene.add(camera);
 
-    // Lights
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(2,3,4));
     scene.add(new THREE.AmbientLight(0x404040, 0.5));
 
-    // Resize handler
     function resize() {
       const w = canvas.clientWidth, h = canvas.clientHeight;
       renderer.setSize(w, h);
@@ -184,7 +182,6 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // Load model
     new GLTFLoader().load(
       'palball.glb',
       ({ scene: model }) => {
@@ -200,18 +197,19 @@
     );
 
     // Copy IP + toast
-    const toast = document.getElementById('toast');
     document.getElementById('copyBtn').onclick = () => {
-      navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(() => {
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2500);
-      });
+      navigator.clipboard.writeText('fenomenal.mrjin.pro:8211')
+        .then(() => {
+          const t = document.getElementById('toast');
+          t.classList.add('show');
+          setTimeout(() => t.classList.remove('show'), 2500);
+        });
     };
 
     // Live status
-    const statusSec = document.getElementById('statusSec');
-    const statusBox = document.getElementById('statusBox');
-    const dot       = document.getElementById('dot');
+    const statusSec = document.getElementById('statusSec'),
+          statusBox = document.getElementById('statusBox'),
+          dot       = document.getElementById('dot');
 
     async function loadStatus() {
       try {
