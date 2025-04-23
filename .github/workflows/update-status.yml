@@ -1,34 +1,39 @@
 name: Update server status
+permissions:
+  contents: write
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # выполняем каждые 5 минут
-  workflow_dispatch:       # можно запустить вручную
+    - cron: '*/5 * * * *'   # каждые 5 минут
+  workflow_dispatch:       # ручной запуск
 
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true   # важно, чтобы GITHUB_TOKEN мог пушить
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Query Palworld and write status.json
-      run: node scripts/update-status.js
+      - name: Query Palworld and write status.json
+        run: node scripts/update-status.js
 
-    - name: Commit status.json
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config user.name "github-actions"
-        git config user.email "actions@github.com"
-        git add status.json
-        git commit -m "Auto-update status.json"
-        git push
+      - name: Commit status.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add status.json
+          git commit -m "Автообновление status.json"
+          git push
