@@ -1,15 +1,16 @@
 {
   "name": "fenomenal",
-  "type": "module",
   "version": "1.0.0",
-  "description": "",
+  "type": "module",
+  "description": "Статусный обновлятор для Fenomenal Palworld Server",
   "main": "index.js",
   "scripts": {
+    "update-status": "node scripts/update-status.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MrJinPro/Fenomenal.git"
+    "url": "https://github.com/MrJinPro/Fenomenal.git"
   },
   "keywords": [],
   "author": "",
