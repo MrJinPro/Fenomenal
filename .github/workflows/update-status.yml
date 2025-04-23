@@ -4,18 +4,18 @@ permissions:
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # каждые 5 минут
-  workflow_dispatch:       # ручной запуск
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          persist-credentials: true   # важно, чтобы GITHUB_TOKEN мог пушить
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -34,6 +34,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+          git pull --rebase origin main
           git add status.json
-          git commit -m "Автообновление status.json"
-          git push
+          git commit -m "Автообновление status.json" || echo "Нет изменений"
+          git push origin main
