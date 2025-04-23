@@ -7,16 +7,12 @@
   <meta name="description" content="Fenomenal — стабильный Palworld-сервер до 32 игроков, честный PvE и низкий пинг." />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 
-  <!-- Шрифты и иконки -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 
   <style>
-    /* Matrix background */
     body,html {margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:Inter,sans-serif;}
     #matrixCanvas {position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:0;}
-
-    /* Content */
     header,main,section,footer,#toast {position:relative;z-index:1;}
     header {display:flex;align-items:center;padding:.6rem 1rem;backdrop-filter:blur(8px);background:rgba(0,0,0,.5);}
     .logo {display:flex;align-items:center;gap:.5rem;text-decoration:none;color:#fff;}
@@ -76,12 +72,15 @@
       <h2>Как подключиться</h2>
       <ul>
         <li>Запусти <strong>Palworld</strong></li>
-        <li>В меню «Direct Connect»</li>
-        <li>Введи <kbd>fenomenal.mrjin.pro:8211</kbd></li>
+        <li>В меню «Присоединиться к совместной игре»</li>
       </ul>
-      <button id="copyBtn" class="primary-btn">
-        <i class="fa-regular fa-copy"></i>Копировать IP
+      <button id="getPwdBtn" class="primary-btn">
+        <i class="fa-solid fa-key"></i> Получить пароль
       </button>
+      <button id="copyBtn" class="primary-btn" style="margin-left:.5rem;">
+        <i class="fa-regular fa-copy"></i> Скопировать IP
+      </button>
+      <div id="pwdSection" style="margin-top:1rem; color:#0f0;"></div>
     </section>
 
     <section id="statusSec">
@@ -102,90 +101,88 @@
   <div id="toast">IP скопирован!</div>
 
   <script>
-    // Имена/никнеймы для падающих потоков
+    // Matrix streams with nicknames
     const items = ["Pumba","Lana","Misha","Lisa","Artur","Pika","MrJin"];
-
-    const canvas = document.getElementById('matrixCanvas'),
-          ctx    = canvas.getContext('2d');
-    let w, h, size, streams;
-
-    function initMatrix() {
-      w = canvas.width  = innerWidth;
-      h = canvas.height = innerHeight;
-      size = 20;
-      ctx.font = size + 'px monospace';
-      // распределяем потоки по случайным X без перекрытия
-      streams = [];
-      const usedRanges = [];
-      items.forEach(name => {
-        const textWidth = ctx.measureText(name).width;
-        let x, attempts = 0;
-        do {
-          x = Math.random() * (w - textWidth);
-          attempts++;
-        } while (
-          usedRanges.some(r => !(x + textWidth < r[0] || x > r[1])) &&
-          attempts < 100
-        );
-        usedRanges.push([x, x + textWidth]);
-        streams.push({
-          name,
-          x,
-          y: Math.random() * -h,
-          speed: 1 + Math.random() * 2
-        });
+    const canvas = document.getElementById('matrixCanvas'), ctx = canvas.getContext('2d');
+    let w,h,size,streams;
+    function initMatrix(){
+      w=canvas.width=innerWidth; h=canvas.height=innerHeight;
+      size=20; ctx.font=size+'px monospace';
+      streams=[]; const used=[];
+      items.forEach(name=>{
+        const tw=ctx.measureText(name).width;
+        let x,tries=0;
+        do{ x=Math.random()*(w-tw); tries++; }
+        while(used.some(r=>!(x+tw<r[0]||x>r[1]))&&tries<100);
+        used.push([x,x+tw]);
+        streams.push({name,x,y:Math.random()*-h,speed:1+Math.random()*2});
       });
     }
-
-    function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = '#0F0';
-      streams.forEach(s => {
-        ctx.fillText(s.name, s.x, s.y);
-        s.y += s.speed;
-        if (s.y > h + size) {
-          s.y = -size * (1 + Math.random() * 5);
-        }
+    function draw(){
+      ctx.fillStyle='rgba(0,0,0,0.1)'; ctx.fillRect(0,0,w,h);
+      ctx.fillStyle='#0F0';
+      streams.forEach(s=>{
+        ctx.fillText(s.name,s.x,s.y);
+        s.y+=s.speed;
+        if(s.y>h+size) s.y=-size*(1+Math.random()*5);
       });
     }
+    window.addEventListener('resize',initMatrix);
+    initMatrix(); setInterval(draw,50);
 
-    window.addEventListener('resize', initMatrix);
-    initMatrix();
-    setInterval(draw, 50);
-
-    // Copy IP toast
-    document.getElementById('copyBtn').onclick = () => {
-      navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(() => {
-        const t = document.getElementById('toast');
+    // Copy IP
+    document.getElementById('copyBtn').onclick = ()=>{
+      navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(()=>{
+        const t=document.getElementById('toast');
         t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 1500);
+        setTimeout(()=>t.classList.remove('show'),1500);
       });
     };
 
+    // Quiz for password
+    let attempts=0;
+    document.getElementById('getPwdBtn').onclick = ()=>{
+      if(attempts>=3){
+        document.getElementById('pwdSection').innerHTML =
+          'Напишите в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
+        return;
+      }
+      const ans=prompt('Кто основал "Fenomenal"?');
+      const valid=['Сергей','Серёга','Pumba','Sergey','Seriy'];
+      if(valid.includes(ans)){
+        document.getElementById('pwdSection').textContent='Пароль: 7815';
+      } else {
+        attempts++;
+        alert(`Неверно! Осталось ${3-attempts} попыток.`);
+        if(attempts>=3){
+          document.getElementById('pwdSection').innerHTML =
+            'Напишите в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
+        }
+      }
+    };
+
     // Live status
-    const statusBox = document.getElementById('statusBox'),
-          statusSec = document.getElementById('statusSec'),
-          dot       = document.getElementById('dot');
-    async function loadStatus() {
-      try {
-        const res = await fetch('/api/server/status', { cache: 'no-store' });
-        if (!res.ok) throw 0;
-        const { status, uptime, memory, cpu, playerCount } = await res.json();
-        statusBox.innerHTML = `
+    const statusBox=document.getElementById('statusBox'),
+          statusSec=document.getElementById('statusSec'),
+          dot=document.getElementById('dot');
+    async function loadStatus(){
+      try{
+        const res=await fetch('/api/server/status',{cache:'no-store'});
+        if(!res.ok) throw 0;
+        const {status,uptime,memory,cpu,playerCount}=await res.json();
+        statusBox.innerHTML=`
           <div><strong>${status      ?? '—'}</strong>Статус</div>
           <div><strong>${playerCount ?? '—'}</strong>Игроков</div>
           <div><strong>${uptime      ?? '—'}</strong>Аптайм</div>
           <div><strong>${cpu         ?? '—'}</strong>CPU</div>
           <div><strong>${memory      ?? '—'}</strong>RAM</div>`;
-        statusSec.style.display = '';
-        dot.textContent = '🟢';
-      } catch {
-        dot.textContent = '🔴';
+        statusSec.style.display='';
+        dot.textContent='🟢';
+      }catch{
+        dot.textContent='🔴';
       }
     }
-    loadStatus();
-    setInterval(loadStatus, 30000);
+    loadStatus(); setInterval(loadStatus,30000);
   </script>
 </body>
 </html>
