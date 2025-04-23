@@ -102,46 +102,57 @@
   <div id="toast">IP скопирован!</div>
 
   <script>
-    // Имена/никнеймы для «падающих» элементов
-    const items = [
-      "Pumba",
-      "Lana",
-      "Misha",
-      "Lisa",
-      "Artur",
-      "Pika",
-      "MrJin"
-      "Myp Myp"
-    ];
+    // Имена/никнеймы для падающих потоков
+    const items = ["Pumba","Lana","Misha","Lisa","Artur","Pika","MrJin"];
 
-    // Matrix rain
     const canvas = document.getElementById('matrixCanvas'),
           ctx    = canvas.getContext('2d');
-    let w, h, cols, drops;
+    let w, h, size, streams;
+
     function initMatrix() {
       w = canvas.width  = innerWidth;
       h = canvas.height = innerHeight;
-      const size = 20;
-      cols = Math.floor(w / size);
-      drops = Array(cols).fill(0);
+      size = 20;
       ctx.font = size + 'px monospace';
-    }
-    window.addEventListener('resize', initMatrix);
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = '#0F0';
-      const size = 20;
-      drops.forEach((y, i) => {
-        const text = items[Math.floor(Math.random() * items.length)];
-        const x = i * size;
-        ctx.fillText(text, x, y * size);
-        if (y * size > h && Math.random() > 0.975) drops[i] = 0;
-        else drops[i]++;
+      // распределяем потоки по случайным X без перекрытия
+      streams = [];
+      const usedRanges = [];
+      items.forEach(name => {
+        const textWidth = ctx.measureText(name).width;
+        let x, attempts = 0;
+        do {
+          x = Math.random() * (w - textWidth);
+          attempts++;
+        } while (
+          usedRanges.some(r => !(x + textWidth < r[0] || x > r[1])) &&
+          attempts < 100
+        );
+        usedRanges.push([x, x + textWidth]);
+        streams.push({
+          name,
+          x,
+          y: Math.random() * -h,
+          speed: 1 + Math.random() * 2
+        });
       });
     }
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#0F0';
+      streams.forEach(s => {
+        ctx.fillText(s.name, s.x, s.y);
+        s.y += s.speed;
+        if (s.y > h + size) {
+          s.y = -size * (1 + Math.random() * 5);
+        }
+      });
+    }
+
+    window.addEventListener('resize', initMatrix);
     initMatrix();
-    setInterval(drawMatrix, 75);
+    setInterval(draw, 50);
 
     // Copy IP toast
     document.getElementById('copyBtn').onclick = () => {
