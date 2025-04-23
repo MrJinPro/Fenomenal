@@ -1,2 +1,23 @@
-npm init -y
-npm install gamedig
+{
+  "name": "fenomenal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrJinPro/Fenomenal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MrJinPro/Fenomenal/issues"
+  },
+  "homepage": "https://github.com/MrJinPro/Fenomenal#readme",
+  "dependencies": {
+    "gamedig": "^5.2.0"
+  }
+}
