@@ -12,71 +12,147 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 
   <style>
-    /* Основные */
-    body,html {margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:Inter,sans-serif;}
-    header,main,section,footer,#toast {position:relative;z-index:1;}
-    header {display:flex;align-items:center;padding:.6rem 1rem;backdrop-filter:blur(8px);background:rgba(0,0,0,.5);}
-    /* Логотип: градиентный текст + анимированное SVG */
-    .logo {display:flex;align-items:center;gap:.5rem;text-decoration:none;}
+    /* Сброс и базовые стили */
+    body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; font-family:Inter,sans-serif; background:#000; color:#fff; }
+    header, main, section, footer, #toast { position: relative; z-index: 1; }
+
+    /* Matrix-фон */
+    #matrixCanvas {
+      position: fixed; top:0; left:0;
+      width:100%; height:100%;
+      background:#000;
+      z-index:0;
+    }
+
+    /* Шапка */
+    header {
+      display: flex; align-items: center;
+      padding: .6rem 1rem;
+      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,.5);
+    }
+    .logo {
+      display: flex; align-items: center; gap: .5rem;
+      text-decoration: none;
+    }
     .logo img {
-      width:36px;height:36px;
+      width:36px; height:36px;
       animation: hueRotate 15s linear infinite;
     }
     .logo span {
       font:600 1.3rem 'Orbitron';
-      background:linear-gradient(90deg,#00ffa3,#4dffe0,#00ffa3);
-      background-size:300% 300%;
-      -webkit-background-clip:text;
-      color:transparent;
+      background: linear-gradient(90deg, #00ffa3, #4dffe0, #00ffa3);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      color: transparent;
       animation: rainbow 15s ease infinite;
     }
 
-    /* Кнопки */
+    /* Кнопки подключения и пароля */
     .primary-btn {
-      margin-left:auto;
-      background:#00ffa3;color:#000;
-      padding:.5rem 1.2rem;border-radius:.5rem;
-      font-weight:600;text-decoration:none;
-      display:inline-flex;align-items:center;gap:.4rem;
-      transition:background .2s;
+      margin-left: auto;
+      background: #00ffa3;
+      color: #000;
+      padding: .5rem 1.2rem;
+      border-radius: .5rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      transition: background .2s;
     }
-    .primary-btn:hover {background:#00cc84;}
+    .primary-btn:hover { background: #00cc84; }
 
-    /* Заголовок */
-    .hero {text-align:center;padding:6rem 1rem 3rem;}
-    .rainbow {
-      font-size:clamp(2.5rem,8vw,4rem);
-      font-family:'Orbitron',sans-serif;
-      background:linear-gradient(90deg,#ff0000,#ffa500,#ffff00,#00ff00,#0000ff,#4b0082,#8a2be2);
-      background-size:300% 300%;
-      -webkit-background-clip:text;
-      color:transparent;
-      animation:rainbow 15s ease infinite;
-    }
-    .hero p {color:rgba(255,255,255,.8);font-size:1.1rem;margin-top:.5rem;}
-
-    /* Градиент-анимация */
+    /* Анимации */
     @keyframes rainbow {
-      0% {background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     @keyframes hueRotate {
-      0% {filter:hue-rotate(0deg)}
-      100%{filter:hue-rotate(360deg)}
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
     }
 
-    /* Остальной стиль упрощённо */
-    section {max-width:840px;margin:2rem auto;padding:0 1rem;color:#fff;}
-    section h2 {font-size:1.5rem;color:#00ffa3;margin-bottom:.6rem;}
-    ul {list-style:disc;padding-left:1.4rem;line-height:1.7;}
-    kbd {background:rgba(0,255,163,.2);padding:.2rem .4rem;border-radius:.2rem;}
-    #statusSec {display:none;}
-    .status-box {display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;background:rgba(0,0,0,.7);padding:1rem;border-radius:.5rem;}
-    .status-box div strong {display:block;font-size:1.3rem;color:#4dffe0;}
-    footer {text-align:center;padding:1.5rem;color:rgba(255,255,255,.6);font-size:.8rem;}
-    #toast {position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:#00ffa3;color:#000;padding:.6rem 1rem;border-radius:.4rem;opacity:0;transition:opacity .3s;font-weight:600;}
-    #toast.show {opacity:1;}
+    /* Hero-блок */
+    .hero {
+      text-align: center;
+      padding: 6rem 1rem 3rem;
+    }
+    .rainbow-title {
+      font-size: clamp(2.5rem,8vw,4rem);
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(90deg,#ff0000,#ffa500,#ffff00,#00ff00,#0000ff,#4b0082,#8a2be2);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 15s ease infinite;
+    }
+    .hero p {
+      color: rgba(255,255,255,.8);
+      font-size: 1.1rem;
+      margin-top: .5rem;
+    }
+
+    /* Секции контента */
+    section {
+      max-width: 840px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    section h2 {
+      font-size: 1.5rem;
+      color: #00ffa3;
+      margin-bottom: .6rem;
+    }
+    ul {
+      list-style: disc;
+      padding-left: 1.4rem;
+      line-height: 1.7;
+    }
+    kbd {
+      background: rgba(0,255,163,.2);
+      padding: .2rem .4rem;
+      border-radius: .2rem;
+    }
+
+    /* Статус-бокс */
+    #statusSec { display: none; }
+    .status-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+      gap: 1rem;
+      background: rgba(0,0,0,.7);
+      padding: 1rem;
+      border-radius: .5rem;
+    }
+    .status-box div strong {
+      display: block;
+      font-size: 1.3rem;
+      color: #4dffe0;
+    }
+
+    /* Футер и тост */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: rgba(255,255,255,.6);
+      font-size: .8rem;
+    }
+    #toast {
+      position: fixed;
+      bottom: 1rem; left: 50%;
+      transform: translateX(-50%);
+      background: #00ffa3;
+      color: #000;
+      padding: .6rem 1rem;
+      border-radius: .4rem;
+      opacity: 0;
+      transition: opacity .3s;
+      font-weight: 600;
+    }
+    #toast.show { opacity: 1; }
   </style>
 </head>
 <body>
@@ -84,7 +160,7 @@
 
   <header>
     <a href="#" class="logo">
-      <img src="favicon.svg" alt="Fenomenal">
+      <img src="favicon.svg" alt="Fenomenal" />
       <span>Fenomenal</span>
     </a>
     <a href="steam://connect/fenomenal.mrjin.pro:8211" class="primary-btn">
@@ -94,60 +170,89 @@
 
   <main>
     <div class="hero">
-      <div class="rainbow">Palworld Server</div>
+      <div class="rainbow-title">Palworld Server</div>
       <p>Стабильный PvE-мир до 32 игроков. Приключения ждут!</p>
     </div>
 
-    <!-- остальной контент... -->
+    <section>
+      <h2>О сервере</h2>
+      <ul>
+        <li>Кооператив до 32 игроков (даже ваша тётя найдёт, с кем сыграть!)</li>
+        <li>Честный PvE: никакого грифа и PvP (гриферов отправляем обратно в зоопарк!)</li>
+        <li>Ускоренный крафт и рост (прокачка займёт меньше, чем сварить кофе!)</li>
+        <li>Стабильный сервер без лагов (единственный «лаг» — когда забываешь поесть!)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Как подключиться</h2>
+      <ul>
+        <li>Запусти <strong>Palworld</strong></li>
+        <li>В меню «Присоединиться к совместной игре»</li>
+      </ul>
+      <button id="getPwdBtn" class="primary-btn">
+        <i class="fa-solid fa-key"></i> Получить пароль
+      </button>
+      <button id="copyBtn" class="primary-btn" style="margin-left:.5rem;">
+        <i class="fa-regular fa-copy"></i> Скопировать IP
+      </button>
+      <div id="pwdSection" style="margin-top:1rem;color:#0f0;"></div>
+    </section>
+
+    <section id="statusSec">
+      <h2>Статус сервера <span id="dot">⏳</span></h2>
+      <div class="status-box" id="statusBox"></div>
+    </section>
+
+    <section>
+      <h2>Контакты</h2>
+      <ul>
+        <li><a href="https://discord.gg/6rJS8wHh" target="_blank" style="color:#4dffe0">Discord</a></li>
+        <li><a href="https://t.me/MrJin_pro" target="_blank" style="color:#4dffe0">Telegram</a></li>
+      </ul>
+    </section>
   </main>
 
   <footer>© 2025 Fenomenal Server by MrJin</footer>
   <div id="toast">IP скопирован!</div>
 
   <script>
-    // имена для вертикальных потоков
+    // Падающие вертикальные потоки (модифицировано для читаемости)
     const items = ["Pumba","Lana","Misha","Lisa","Artur","Pika","MrJin","Myp-Myp"];
-    const canvas = document.getElementById('matrixCanvas'),
-          ctx    = canvas.getContext('2d');
-    let w, h, size, streams;
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx    = canvas.getContext('2d');
+    let w,h,size,streams;
 
-    function initMatrix() {
-      w = canvas.width  = innerWidth;
+    function initMatrix(){
+      w = canvas.width = innerWidth;
       h = canvas.height = innerHeight;
       size = 24;
       ctx.font = size + 'px monospace';
       streams = [];
       const usedX = [];
-      items.forEach(name => {
-        const textWidth = ctx.measureText(name[0]).width;
-        let x, tries = 0;
+      items.forEach(name=>{
+        const tw = ctx.measureText(name[0]).width;
+        let x, tries=0;
         do {
-          x = Math.random() * (w - textWidth);
+          x = Math.random() * (w - tw);
           tries++;
-        } while (usedX.some(r => Math.abs(r - x) < textWidth*1.2) && tries < 100);
+        } while(usedX.some(px=>Math.abs(px-x)<tw*1.2) && tries<100);
         usedX.push(x);
-        streams.push({
-          name,
-          x,
-          y: Math.random() * -h,
-          speed: 1 + Math.random() * 1.5
-        });
+        streams.push({name,x,y:Math.random()*-h,speed:1+Math.random()*2.2});
       });
     }
 
-    function drawMatrix() {
-      // полупрозрачный фон — для четкости увеличить α
+    function drawMatrix(){
       ctx.fillStyle = 'rgba(0,0,0,0.2)';
-      ctx.fillRect(0, 0, w, h);
+      ctx.fillRect(0,0,w,h);
       ctx.fillStyle = '#0F0';
-      streams.forEach(s => {
-        // рисуем буквы вертикально
-        for (let i = 0; i < s.name.length; i++) {
-          ctx.fillText(s.name[i], s.x, s.y + i * size);
-        }
+      streams.forEach(s=>{
+        s.name.split('').forEach((ch,i)=>{
+          ctx.fillText(ch, s.x, s.y + i*size);
+        });
         s.y += s.speed;
-        if (s.y > h + s.name.length * size) {
-          s.y = -s.name.length * size - Math.random() * h;
+        if(s.y > h + s.name.length * size){
+          s.y = -s.name.length * size - Math.random()*h;
         }
       });
     }
@@ -156,56 +261,56 @@
     initMatrix();
     setInterval(drawMatrix, 60);
 
-    // копировать IP
-    document.getElementById('copyBtn').onclick = () => {
-      navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(() => {
-        const t = document.getElementById('toast');
+    // Копирование IP
+    document.getElementById('copyBtn').onclick = ()=>{
+      navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(()=>{
+        const t=document.getElementById('toast');
         t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 1500);
+        setTimeout(()=>t.classList.remove('show'),1500);
       });
     };
 
-    // викторина на пароль
-    let attempts = 0;
-    document.getElementById('getPwdBtn').onclick = () => {
-      if (attempts >= 3) {
+    // Викторина на пароль
+    let attempts=0;
+    document.getElementById('getPwdBtn').onclick = ()=>{
+      if(attempts>=3){
         document.getElementById('pwdSection').innerHTML =
-          'У Вас 3 неверные попытки для получения пароля обратитесь в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
+          'У Вас 3 неверные попытки, обратитесь в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
         return;
       }
       const ans = prompt('Кто основал "Fenomenal"?');
       const valid = ['Сергей','Серёга','Pumba','Sergey','Seriy'];
-      if (valid.includes(ans)) {
+      if(valid.includes(ans)){
         document.getElementById('pwdSection').textContent = 'Пароль: 7815';
       } else {
         attempts++;
-        alert(`Неверно! Осталось ${3 - attempts} попыток.`);
-        if (attempts >= 3) {
+        alert(`Неверно! Осталось ${3-attempts} попыток.`);
+        if(attempts>=3){
           document.getElementById('pwdSection').innerHTML =
-            'Если Вас 3 неверные попытки для получения пароля напишите в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
+            'Напишите в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
         }
       }
     };
 
     // Live status
-    const statusBox = document.getElementById('statusBox'),
-          statusSec = document.getElementById('statusSec'),
-          dot       = document.getElementById('dot');
-    async function loadStatus() {
-      try {
-        const res = await fetch('/api/server/status',{cache:'no-store'});
-        if (!res.ok) throw 0;
-        const {status,uptime,memory,cpu,playerCount} = await res.json();
-        statusBox.innerHTML = `
+    const statusBox=document.getElementById('statusBox'),
+          statusSec=document.getElementById('statusSec'),
+          dot=document.getElementById('dot');
+    async function loadStatus(){
+      try{
+        const res=await fetch('/api/server/status',{cache:'no-store'});
+        if(!res.ok) throw 0;
+        const {status,uptime,memory,cpu,playerCount}=await res.json();
+        statusBox.innerHTML=`
           <div><strong>${status      ?? '—'}</strong>Статус</div>
           <div><strong>${playerCount ?? '—'}</strong>Игроков</div>
           <div><strong>${uptime      ?? '—'}</strong>Аптайм</div>
           <div><strong>${cpu         ?? '—'}</strong>CPU</div>
           <div><strong>${memory      ?? '—'}</strong>RAM</div>`;
-        statusSec.style.display = '';
-        dot.textContent = '🟢';
-      } catch {
-        dot.textContent = '🔴';
+        statusSec.style.display='';
+        dot.textContent='🟢';
+      }catch{
+        dot.textContent='🔴';
       }
     }
     loadStatus();
