@@ -104,3 +104,170 @@
   </div>
 </body>
 </html>
+<script>
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+let w, h, cols, drops;
+function initMatrix() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+  cols = Math.floor(w / 20);
+  drops = Array(cols).fill(1);
+}
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(0,0,0,0.1)';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#0F0';
+  ctx.font = '16px monospace';
+  for (let i = 0; i < drops.length; i++) {
+    const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+    ctx.fillText(char, i * 20, drops[i] * 20);
+    drops[i]++;
+    if (drops[i] * 20 > h && Math.random() > 0.975) drops[i] = 0;
+  }
+}
+initMatrix();
+setInterval(drawMatrix, 50);
+window.addEventListener('resize', initMatrix);
+
+copyBtn.onclick = () => {
+  navigator.clipboard.writeText('fenomenal.mrjin.pro:8211').then(() => {
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1500);
+  });
+};
+
+let attempts = 0;
+getPwdBtn.onclick = () => {
+  if (attempts >= 3) return pwdSection.innerHTML = 'Напишите в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
+  const ans = prompt('Кто основал "Fenomenal"?');
+  if (["Сергей","Серёга","Pumba","Sergey","Seriy"].includes(ans))
+    pwdSection.textContent = 'Пароль: 7815';
+  else {
+    attempts++;
+    alert(`Неверно! Осталось ${3 - attempts} попыток.`);
+    if (attempts >= 3)
+      pwdSection.innerHTML = 'Напишите в Telegram: <a href="https://t.me/MrJin_pro" style="color:#4dffe0">MrJin_pro</a>';
+  }
+};
+
+const statusBox = document.getElementById('statusBox');
+const statusSec = document.getElementById('statusSec');
+const dot = document.getElementById('dot');
+async function loadStatus() {
+  try {
+    const res = await fetch('/status.json', { cache: 'no-store' });
+    const { status, playerCount, uptime, cpu, memory } = await res.json();
+    statusBox.innerHTML = `
+      <div><strong>${status}</strong>Статус</div>
+      <div><strong>${playerCount}</strong>Игроков</div>
+      <div><strong>${uptime}</strong>Аптайм</div>
+      <div><strong>${cpu}</strong>CPU</div>
+      <div><strong>${memory}</strong>RAM</div>`;
+    statusSec.style.display = '';
+    dot.textContent = '🟢';
+  } catch {
+    dot.textContent = '🔴';
+  }
+}
+loadStatus();
+setInterval(loadStatus, 30000);
+
+// Паллы и сферы
+const container = document.getElementById('container');
+const flash = document.getElementById('flash');
+const capture = document.getElementById('capture');
+const percent = document.getElementById('percent');
+const circle = capture.querySelector('circle');
+const MAX_W = window.innerWidth, MAX_H = window.innerHeight;
+
+function createEntity(src, className) {
+  const el = document.createElement('div');
+  el.className = className;
+  el.style.backgroundImage = `url('${src}')`;
+  el.style.left = Math.random() * (MAX_W - 72) + 'px';
+  el.style.top = Math.random() * (MAX_H - 72) + 'px';
+  el.vx = (Math.random() - 0.5) * 0.6;
+  el.vy = (Math.random() - 0.5) * 0.6;
+  el.alive = true;
+  container.appendChild(el);
+  return el;
+}
+
+function checkCollision(a, b) {
+  const ar = a.getBoundingClientRect();
+  const br = b.getBoundingClientRect();
+  return !(ar.right < br.left || ar.left > br.right || ar.bottom < br.top || ar.top > br.bottom);
+}
+
+function triggerCapture(pal, x, y) {
+  capture.style.display = 'flex';
+  capture.style.left = x + 'px';
+  capture.style.top = y + 'px';
+  let value = 0;
+  const target = [65, 89, 100][Math.floor(Math.random() * 3)];
+  const step = () => {
+    value++;
+    percent.textContent = value + '%';
+    const offset = 282 - (282 * value / 100);
+    circle.style.strokeDashoffset = offset;
+    if (value < target) requestAnimationFrame(step);
+    else {
+      flash.style.left = x + 'px';
+      flash.style.top = y + 'px';
+      flash.style.opacity = 1;
+      pal.style.opacity = 0;
+      setTimeout(() => {
+        flash.style.opacity = 0;
+        capture.style.display = 'none';
+      }, 600);
+    }
+  };
+  step();
+}
+
+async function loadImageSafe(index) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.src = `${index}.png`;
+    img.onload = () => resolve(`${index}.png`);
+    img.onerror = () => resolve(null);
+  });
+}
+
+async function start() {
+  const spheres = (await Promise.all(Array.from({ length: 5 }, (_, i) => loadImageSafe(i + 1)))).filter(Boolean);
+  const pals = (await Promise.all(Array.from({ length: 10 }, (_, i) => loadImageSafe(i + 6)))).filter(Boolean);
+  const entities = [
+    ...spheres.map(s => createEntity(s, 'sphere')),
+    ...pals.sort(() => 0.5 - Math.random()).slice(0, 4).map(p => createEntity(p, 'pal'))
+  ];
+  function loop() {
+    for (let e of entities) {
+      if (!e.alive) continue;
+      const x = parseFloat(e.style.left);
+      const y = parseFloat(e.style.top);
+      let nx = x + e.vx;
+      let ny = y + e.vy;
+      if (nx < 0 || nx > MAX_W - 72) e.vx *= -1;
+      if (ny < 0 || ny > MAX_H - 72) e.vy *= -1;
+      e.style.left = (nx < 0 ? 0 : nx) + 'px';
+      e.style.top = (ny < 0 ? 0 : ny) + 'px';
+      if (e.classList.contains('pal')) {
+        for (let s of entities) {
+          if (s !== e && s.classList.contains('sphere') && s.alive && checkCollision(e, s)) {
+            e.alive = false;
+            const r = e.getBoundingClientRect();
+            triggerCapture(e, r.left + 36, r.top + 36);
+            break;
+          }
+        }
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+start();
+</script>
+
