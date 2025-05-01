@@ -67,44 +67,22 @@
     }
     .pal, .sphere {
       position: absolute;
+      width: 72px;
+      height: 72px;
       background-size: contain;
       background-repeat: no-repeat;
       pointer-events: none;
-    }
-    .pal {
-      width: 80px; height: 80px;
-      transition: transform 3s ease, opacity 3s ease, filter 3s ease;
-    }
-    .sphere {
-      width: 64px; height: 64px;
-      animation: floatRotate 20s linear infinite;
-    }
-    @keyframes floatRotate {
-      0%   { transform: translateY(0) rotate(0deg); }
-      50%  { transform: translateY(-20px) rotate(180deg); }
-      100% { transform: translateY(0) rotate(360deg); }
+      transition: opacity 1s ease, transform 1s ease;
     }
     .flash {
       position: absolute;
-      width: 300px;
-      height: 300px;
+      width: 180px;
+      height: 180px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,255,163,0.7) 0%, rgba(0,255,163,0) 80%);
+      background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
-      z-index: 5;
-    }
-    .message {
-      position: absolute;
-      top: 30%;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 2rem;
-      color: #00ffa3;
-      font-weight: bold;
-      opacity: 0;
-      transition: opacity 0.5s ease;
       z-index: 5;
     }
   </style>
@@ -122,22 +100,70 @@
     </div>
   </div>
   <footer>© 2025 Fenomenal Server by MrJin</footer>  <div id="container"></div>
-  <div class="flash" id="flash"></div>
-  <div class="message" id="message">Пал пойман!</div>  <script>
+  <div class="flash" id="flash"></div>  <script>
     const container = document.getElementById('container');
     const flash = document.getElementById('flash');
-    const message = document.getElementById('message');
     const statusBox = document.getElementById('statusBox');
+    const MAX_WIDTH = window.innerWidth;
+    const MAX_HEIGHT = window.innerHeight;
+    const ENTITIES = [];
 
-    function createDiv(src, className) {
+    function createEntity(src, className) {
       const el = document.createElement('div');
       el.className = className;
       el.style.backgroundImage = `url('${src}')`;
+      const entity = {
+        el,
+        x: Math.random() * MAX_WIDTH,
+        y: Math.random() * MAX_HEIGHT,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        alive: true
+      };
       container.appendChild(el);
-      return el;
+      ENTITIES.push(entity);
     }
 
-    function loadImageSafe(index) {
+    function checkCollision(a, b) {
+      const ar = a.el.getBoundingClientRect();
+      const br = b.el.getBoundingClientRect();
+      return !(ar.right < br.left || ar.left > br.right || ar.bottom < br.top || ar.top > br.bottom);
+    }
+
+    function animate() {
+      for (let i = 0; i < ENTITIES.length; i++) {
+        const e = ENTITIES[i];
+        if (!e.alive) continue;
+        e.x += e.vx;
+        e.y += e.vy;
+
+        if (e.x < 0 || e.x > MAX_WIDTH - 72) e.vx *= -1;
+        if (e.y < 0 || e.y > MAX_HEIGHT - 72) e.vy *= -1;
+
+        e.el.style.left = e.x + 'px';
+        e.el.style.top = e.y + 'px';
+
+        if (e.el.classList.contains('pal')) {
+          for (let j = 0; j < ENTITIES.length; j++) {
+            const s = ENTITIES[j];
+            if (s !== e && s.el.classList.contains('sphere') && s.alive && checkCollision(e, s)) {
+              e.alive = false;
+              e.el.style.opacity = '0';
+              e.el.style.transform = 'scale(0.1)';
+              const r = e.el.getBoundingClientRect();
+              flash.style.left = r.left + 'px';
+              flash.style.top = r.top + 'px';
+              flash.style.opacity = 1;
+              setTimeout(() => flash.style.opacity = 0, 800);
+              break;
+            }
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    async function loadImageSafe(index) {
       return new Promise(resolve => {
         const img = new Image();
         img.src = `${index}.png`;
@@ -146,69 +172,12 @@
       });
     }
 
-    async function loadAssets() {
+    async function start() {
       const spheres = await Promise.all(Array.from({ length: 5 }, (_, i) => loadImageSafe(i + 1)));
       const pals = await Promise.all(Array.from({ length: 10 }, (_, i) => loadImageSafe(i + 6)));
-      return {
-        spheres: spheres.filter(Boolean),
-        pals: pals.filter(Boolean)
-      };
-    }
-
-    function moveElementRandomly(el) {
-      const x = Math.random() * window.innerWidth;
-      const y = Math.random() * window.innerHeight;
-      el.style.left = `${x}px`;
-      el.style.top = `${y}px`;
-    }
-
-    function animateSphere(el) {
-      moveElementRandomly(el);
-      setInterval(() => moveElementRandomly(el), 5000);
-    }
-
-    function spawnSphere(src) {
-      const el = createDiv(src, 'sphere');
-      animateSphere(el);
-    }
-
-    function spawnPal(src) {
-      const el = createDiv(src, 'pal');
-      const startX = Math.random() * window.innerWidth;
-      const startY = Math.random() * window.innerHeight;
-      el.style.left = `${startX}px`;
-      el.style.top = `${startY}px`;
-
-      setTimeout(() => triggerCatch(el), 2000 + Math.random() * 1000);
-    }
-
-    function triggerCatch(pal) {
-      const rect = pal.getBoundingClientRect();
-      flash.style.left = `${rect.left}px`;
-      flash.style.top = `${rect.top}px`;
-      flash.style.opacity = 1;
-
-      pal.style.transform = 'scale(0.1)';
-      pal.style.opacity = '0';
-      pal.style.filter = 'blur(10px)';
-
-      setTimeout(() => {
-        flash.style.opacity = 0;
-        message.style.opacity = 1;
-        setTimeout(() => message.style.opacity = 0, 2000);
-      }, 1000);
-    }
-
-    async function start() {
-      const { spheres, pals } = await loadAssets();
-      spheres.forEach(spawnSphere);
-
-      const selected = [];
-      while (selected.length < 4 && pals.length) {
-        const rnd = pals.splice(Math.floor(Math.random() * pals.length), 1)[0];
-        if (rnd) selected.push(rnd);
-      }
-      selected.forEach(spawnPal);
+      spheres.filter(Boolean).forEach(src => createEntity(src, 'sphere'));
+      pals.filter(Boolean).sort(() => 0.5 - Math.random()).slice(0, 4).forEach(src => createEntity(src, 'pal'));
+      animate();
     }
 
     document.getElementById("copyBtn").onclick = () => {
