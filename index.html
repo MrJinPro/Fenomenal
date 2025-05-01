@@ -3,7 +3,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fenomenal · Palworld Server</title>
-  <meta name="description" content="Закрытый PvE-сервер Palworld с друзьями. Онлайн, карта, достижения и Discord — всё на одной странице!" />
+  <meta name="description" content="Приватный PvE-сервер Palworld для друзей. Онлайн, карта, Discord — всё в одном месте!" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
@@ -37,9 +37,11 @@
     @keyframes hueRotate {
       0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); }
     }
-    canvas#matrixCanvas {
+    canvas#orbCanvas {
       position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%; z-index: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
     }
     main { padding: 1rem; position: relative; z-index: 1; }
     .hero {
@@ -74,14 +76,6 @@
     }
     .status-box div strong { display: block; font-size: 1.3rem; color: #4dffe0; }
     .map-img { width: 100%; border-radius: 0.5rem; margin-top: 1rem; }
-    .achievements { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
-    .achievements div {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 0.5rem 1rem;
-      border-radius: 0.4rem;
-      flex: 1 1 180px;
-    }
     footer { text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.6); font-size: 0.8rem; }
     #toast {
       position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
@@ -93,7 +87,7 @@
   </style>
 </head>
 <body>
-  <canvas id="matrixCanvas"></canvas>
+  <canvas id="orbCanvas"></canvas>
   <header>
     <a href="#" class="logo">
       <img src="favicon.svg" alt="Fenomenal">
@@ -118,16 +112,6 @@
 </section>
 
 <section>
-  <h2>Достижения игроков</h2>
-  <div class="achievements">
-    <div>Серёга — открыл 100% карты</div>
-    <div>Лана — приручила 20 палов</div>
-    <div>Миша — построил супер-базу</div>
-    <div>Пика — не выходил 48 часов подряд</div>
-  </div>
-</section>
-
-<section>
   <h2>Наш Discord</h2>
   <ul>
     <li><a href="https://discord.gg/6rJS8wHh" style="color:#4dffe0">Присоединиться к чату</a></li>
@@ -136,31 +120,42 @@
 
   </main>  <footer>© 2025 Fenomenal Server by MrJin</footer>
   <div id="toast">IP скопирован!</div>  <script>
-    const canvas = document.getElementById("matrixCanvas");
-    const ctx = canvas.getContext("2d");
-    let w, h, size = 18, cols, drops;
-    const letters = "PumbaLanaMishaLisaArturPikaMrJin".split("");
+    // Орбы
+    const canvas = document.getElementById('orbCanvas');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    let orbs = [];
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      cols = Math.floor(w / size);
-      drops = Array(cols).fill(0);
+      orbs = Array.from({ length: 25 }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: 10 + Math.random() * 20,
+        dx: -1 + Math.random() * 2,
+        dy: -1 + Math.random() * 2,
+        alpha: 0.2 + Math.random() * 0.4
+      }));
     }
-    function draw() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "#0F0";
-      ctx.font = size + "px monospace";
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * size, drops[i] * size);
-        if (drops[i] * size > h && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
+    function animate() {
+      ctx.clearRect(0, 0, w, h);
+      for (const orb of orbs) {
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,255,163,${orb.alpha})`;
+        ctx.fill();
+        orb.x += orb.dx; orb.y += orb.dy;
+        if (orb.x < -orb.r) orb.x = w + orb.r;
+        if (orb.y < -orb.r) orb.y = h + orb.r;
+        if (orb.x > w + orb.r) orb.x = -orb.r;
+        if (orb.y > h + orb.r) orb.y = -orb.r;
       }
+      requestAnimationFrame(animate);
     }
-    resize(); setInterval(draw, 50);
-    window.addEventListener("resize", resize);
+    resize(); animate();
+    window.addEventListener('resize', resize);
 
+    // Copy IP
     document.getElementById("copyBtn").onclick = () => {
       navigator.clipboard.writeText("fenomenal.mrjin.pro:8211").then(() => {
         const t = document.getElementById("toast");
@@ -169,6 +164,7 @@
       });
     };
 
+    // Статус сервера
     const statusBox = document.getElementById('statusBox');
     const statusSec = document.getElementById('statusSec');
     const dot = document.getElementById('dot');
