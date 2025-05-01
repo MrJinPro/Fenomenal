@@ -4,10 +4,10 @@ import * as Gamedig from 'gamedig';
 const HOST = 'fenomenal.mrjin.pro';
 const PORT = 8211;
 
-function fmtUptime(sec: number): string {
-  const h = Math.floor(sec / 3600),
-        m = Math.floor((sec % 3600) / 60),
-        s = Math.floor(sec % 60);
+function fmtUptime(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = Math.floor(sec % 60);
   return `${h}ч ${m}м ${s}с`;
 }
 
@@ -23,23 +23,22 @@ function fmtUptime(sec: number): string {
     });
 
     const players = Array.isArray(dig.players) ? dig.players.length : 0;
-    const rawUp   = dig.raw?.uptime;
+    const rawUp = dig.raw?.uptime;
 
     data = {
-      status:      'Онлайн',
+      status: 'Онлайн',
       playerCount: players,
-      uptime:      rawUp != null ? fmtUptime(rawUp) : '—',
-      cpu:         '—',
-      memory:      '—'
+      uptime: rawUp != null ? fmtUptime(rawUp) : '—',
+      cpu: '—',
+      memory: '—'
     };
   } catch (err) {
-    // Заглушка если запрос неудачен
     data = {
-      status:      'Онлайн (мок)',
-      playerCount: 1,
-      uptime:      '12ч 0м 0с',
-      cpu:         '—',
-      memory:      '—'
+      status: 'Офлайн',
+      playerCount: 0,
+      uptime: '—',
+      cpu: '—',
+      memory: '—'
     };
   }
 
