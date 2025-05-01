@@ -37,11 +37,24 @@
     @keyframes hueRotate {
       0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); }
     }
-    canvas#orbCanvas {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 0;
+    .floating {
+      position: fixed;
+      width: 64px; height: 64px;
       pointer-events: none;
+      animation: float 30s linear infinite;
+      z-index: 0;
+    }
+    @keyframes float {
+      0% {
+        transform: translateY(-100px) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% {
+        transform: translateY(110vh) translateX(50vw) rotate(360deg);
+        opacity: 0;
+      }
     }
     main { padding: 1rem; position: relative; z-index: 1; }
     .hero {
@@ -87,8 +100,10 @@
   </style>
 </head>
 <body>
-  <canvas id="orbCanvas"></canvas>
-  <header>
+  <img src="1.png" class="floating" style="left:10vw; animation-delay: 0s;">
+  <img src="2.png" class="floating" style="left:30vw; animation-delay: 5s;">
+  <img src="3.png" class="floating" style="left:60vw; animation-delay: 10s;">
+  <img src="4.png" class="floating" style="left:80vw; animation-delay: 15s;">  <header>
     <a href="#" class="logo">
       <img src="favicon.svg" alt="Fenomenal">
       <span>Fenomenal</span>
@@ -120,42 +135,6 @@
 
   </main>  <footer>© 2025 Fenomenal Server by MrJin</footer>
   <div id="toast">IP скопирован!</div>  <script>
-    // Орбы
-    const canvas = document.getElementById('orbCanvas');
-    const ctx = canvas.getContext('2d');
-    let w, h;
-    let orbs = [];
-    function resize() {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      orbs = Array.from({ length: 25 }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: 10 + Math.random() * 20,
-        dx: -1 + Math.random() * 2,
-        dy: -1 + Math.random() * 2,
-        alpha: 0.2 + Math.random() * 0.4
-      }));
-    }
-    function animate() {
-      ctx.clearRect(0, 0, w, h);
-      for (const orb of orbs) {
-        ctx.beginPath();
-        ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0,255,163,${orb.alpha})`;
-        ctx.fill();
-        orb.x += orb.dx; orb.y += orb.dy;
-        if (orb.x < -orb.r) orb.x = w + orb.r;
-        if (orb.y < -orb.r) orb.y = h + orb.r;
-        if (orb.x > w + orb.r) orb.x = -orb.r;
-        if (orb.y > h + orb.r) orb.y = -orb.r;
-      }
-      requestAnimationFrame(animate);
-    }
-    resize(); animate();
-    window.addEventListener('resize', resize);
-
-    // Copy IP
     document.getElementById("copyBtn").onclick = () => {
       navigator.clipboard.writeText("fenomenal.mrjin.pro:8211").then(() => {
         const t = document.getElementById("toast");
@@ -164,7 +143,6 @@
       });
     };
 
-    // Статус сервера
     const statusBox = document.getElementById('statusBox');
     const statusSec = document.getElementById('statusSec');
     const dot = document.getElementById('dot');
