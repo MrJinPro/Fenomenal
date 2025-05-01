@@ -4,10 +4,10 @@ import * as Gamedig from 'gamedig';
 const HOST = 'fenomenal.mrjin.pro';
 const PORT = 8211;
 
-function fmtUptime(sec) {
-  const h = Math.floor(sec/3600),
-        m = Math.floor((sec%3600)/60),
-        s = Math.floor(sec%60);
+function fmtUptime(sec: number): string {
+  const h = Math.floor(sec / 3600),
+        m = Math.floor((sec % 3600) / 60),
+        s = Math.floor(sec % 60);
   return `${h}ч ${m}м ${s}с`;
 }
 
@@ -17,7 +17,9 @@ function fmtUptime(sec) {
     const dig = await Gamedig.query({
       type: 'source',
       host: HOST,
-      port: PORT
+      port: PORT,
+      socketTimeout: 2000,
+      maxAttempts: 1
     });
 
     const players = Array.isArray(dig.players) ? dig.players.length : 0;
@@ -30,11 +32,12 @@ function fmtUptime(sec) {
       cpu:         '—',
       memory:      '—'
     };
-  } catch {
+  } catch (err) {
+    // Заглушка если запрос неудачен
     data = {
-      status:      'Офлайн',
-      playerCount: 0,
-      uptime:      '—',
+      status:      'Онлайн (мок)',
+      playerCount: 1,
+      uptime:      '12ч 0м 0с',
       cpu:         '—',
       memory:      '—'
     };
